@@ -1,21 +1,8 @@
 import {getRandomArrayItem, getRandomInteger} from '../utils/random-values';
+import {types} from '../const';
 
 const getType = () => {
-  const types = [
-    `bus`,
-    `check-in`,
-    `drive`,
-    `flight`,
-    `restaurant`,
-    `ship`,
-    `sightseeing`,
-    `taxi`,
-    `train`,
-    `transport`,
-    `trip`
-  ];
-
-  return getRandomArrayItem(types);
+  return getRandomArrayItem(Object.keys(types));
 };
 
 const getCity = () => {
@@ -44,17 +31,26 @@ const getDescription = () => {
 
   return Array.from(new Set(new Array(getSentencesCount())
     .fill(``)
-    .map(() => getRandomArrayItem(descriptions)))).join(` `);
+    .map(() => getRandomArrayItem(descriptions))))
+    .join(` `);
 };
 
 const getDate = () => {
-  const currentDate = new Date();
+  const ONE_DAY_IN_MINUTES = 24 * 60;
 
-  return currentDate.setDate(currentDate.getDate() + getRandomInteger(1, 7));
+  const currentDate = new Date();
+  const startDate = currentDate.setMinutes(currentDate.getMinutes() + getRandomInteger(100, ONE_DAY_IN_MINUTES * 3));
+  const endDate = new Date(startDate)
+    .setMinutes(currentDate.getMinutes() + getRandomInteger(10, ONE_DAY_IN_MINUTES * 3));
+
+  return {
+    start: startDate,
+    end: endDate
+  };
 };
 
 const getPrice = () => {
-  return getRandomInteger(2, 150);
+  return getRandomInteger(10, 950);
 };
 
 const getOffers = () => {

@@ -5,7 +5,7 @@ import {createSortTemplate} from './components/sort';
 import {createFormCardCreateTemplate} from './components/card-create';
 import {createFormCardEditTemplate} from './components/card-edit';
 import {createBoardTemplate} from './components/board';
-import {createCardTemplate} from './components/card';
+import {createTripEventTemplate} from './components/trip-event';
 import {createTripEvents} from './mock/trip-event';
 
 const render = (container, template, place) => {
@@ -30,4 +30,4 @@ render(pageTripEvents, createBoardTemplate(), `beforeend`);
 
 const cards = document.querySelector(`.trip-events__list`);
 
-tripEvents.forEach((tripEvent) => render(cards, createCardTemplate(tripEvent), `beforeend`));
+tripEvents.forEach((tripEvent) => render(cards, createTripEventTemplate(tripEvent), `beforeend`));
