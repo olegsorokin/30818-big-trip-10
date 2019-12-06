@@ -2,7 +2,7 @@ import {getRandomArrayItem, getRandomInteger} from '../utils/random-values';
 import {types} from '../const';
 
 const getType = () => {
-  return getRandomArrayItem(Object.keys(types));
+  return getRandomArrayItem(types);
 };
 
 const getCity = () => {

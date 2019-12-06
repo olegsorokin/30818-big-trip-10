@@ -29,7 +29,7 @@ const getOffersMarkup = (offers) => {
   return offers.size ? `<ul class="event__selected-offers">${offersMarkup}</ul>` : ``;
 };
 
-const createTripEventTemplate = ({type, city, date, price, offers}) => {
+const createTripEventTemplate = ({type, date, price, offers}) => {
   return (
     `<li class="trip-events__item">
       <div class="event">
