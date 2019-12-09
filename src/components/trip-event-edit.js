@@ -1,4 +1,4 @@
-import {transferTypes, activityTypes, destinations, offers} from '../const';
+import {transferTypes, activityTypes, destinations, offers as offersList} from '../const';
 import {formatInputDate} from '../utils/format-time';
 
 const createTypeGroupMarkup = (title, types, index) => {
@@ -62,11 +62,13 @@ const createPhotosMarkup = (photos) => {
   );
 };
 
-const createOffersMarkup = (index) => {
-  const list = offers.map(({type, title, price}) => {
+const createOffersMarkup = (offers, index) => {
+  const list = offersList.map(({type, title, price}) => {
+    const checked = offers.size && [...offers].find((offer) => offer.title === title) ? `checked` : ``;
+
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${index}" type="checkbox" name="event-offer-${type}">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${index}" type="checkbox" name="event-offer-${type}" ${checked}>
         <label class="event__offer-label" for="event-offer-${type}-${index}">
           <span class="event__offer-title">${title}</span>
           &plus;
@@ -83,7 +85,7 @@ const createOffersMarkup = (index) => {
   );
 };
 
-export const createFormTripEventTemplate = ({type, city, description, date, price, photos}, index) => {
+export const createFormTripEventTemplate = ({type, city, description, date, price, photos, offers}, index) => {
   const typeId = type.toLowerCase();
   const startDate = formatInputDate(date.start);
   const endDate = formatInputDate(date.end);
@@ -131,7 +133,7 @@ export const createFormTripEventTemplate = ({type, city, description, date, pric
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-          ${createOffersMarkup(index)}
+          ${createOffersMarkup(offers, index)}
         </section>
 
         <section class="event__section  event__section--destination">

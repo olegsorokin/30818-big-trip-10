@@ -1,4 +1,5 @@
 import {getTripInfo} from '../mock/trip-info';
+import {formatShortDate} from '../utils/format-time';
 
 export const createInfoTemplate = (tripEvents) => {
   const createTitleMarkup = () => {
@@ -11,11 +12,8 @@ export const createInfoTemplate = (tripEvents) => {
   };
 
   const createDatesMarkup = ({start, end}) => {
-    const formatTripInfoDate = (date) => {
-      return `${new Date(date).getDate()} ${new Date(date).toLocaleString(`en`, {month: `short`})}`;
-    };
-    const startDate = formatTripInfoDate(start);
-    const endDate = formatTripInfoDate(end);
+    const startDate = formatShortDate(start);
+    const endDate = formatShortDate(end);
 
     return `${startDate}&nbsp;&mdash;&nbsp;${endDate}`;
   };

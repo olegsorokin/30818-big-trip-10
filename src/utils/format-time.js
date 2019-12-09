@@ -37,4 +37,8 @@ const formatInputDate = (date) => {
   return `${targetDate.toLocaleDateString(`en-GB`)} ${targetDate.toLocaleTimeString(`en-GB`, options)}`;
 };
 
-export {formatTime, getDiffTime, formatDiff, formatDatetime, formatInputDate};
+const formatShortDate = (date) => {
+  return `${new Date(date).getDate()} ${new Date(date).toLocaleString(`en`, {month: `short`})}`;
+};
+
+export {formatTime, getDiffTime, formatDiff, formatDatetime, formatInputDate, formatShortDate};
