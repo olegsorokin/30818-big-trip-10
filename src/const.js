@@ -1,15 +1,48 @@
-const types = [
-  `bus`,
-  `check-in`,
-  `drive`,
-  `flight`,
-  `restaurant`,
-  `ship`,
-  `sightseeing`,
-  `taxi`,
-  `train`,
-  `transport`,
-  `trip`
+const transferTypes = [
+  `Bus`,
+  `Drive`,
+  `Flight`,
+  `Ship`,
+  `Taxi`,
+  `Train`,
+  `Transport`,
+  `Trip`
 ];
 
-export {types};
+const activityTypes = [
+  `Check-in`,
+  `Restaurant`,
+  `Sightseeing`
+];
+
+const destinations = [
+  `Amsterdam`,
+  `Geneva`,
+  `Chamonix`,
+  `Saint Petersburg`
+];
+
+const offers = [
+  {
+    type: `luggage`,
+    title: `Add luggage`,
+    price: 10
+  },
+  {
+    type: `comfort`,
+    title: `Switch to comfort class`,
+    price: 150
+  },
+  {
+    type: `meal`,
+    title: `Add meal`,
+    price: 2
+  },
+  {
+    type: `seats`,
+    title: `Choose seats`,
+    price: 9
+  }
+];
+
+export {transferTypes, activityTypes, destinations, offers};

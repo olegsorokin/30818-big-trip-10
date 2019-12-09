@@ -1,5 +1,9 @@
 const formatTime = (timestamp) => {
-  return new Date(timestamp).toLocaleTimeString(`ru`, {hour: `numeric`, minute: `numeric`});
+  return new Date(timestamp).toLocaleTimeString(`en-GB`, {hour: `numeric`, minute: `numeric`});
+};
+
+const formatDatetime = (date) => {
+  return new Date(date).toISOString().slice(0, -5);
 };
 
 const getDiffTime = (start, end) => {
@@ -12,7 +16,9 @@ const formatDiff = (date) => {
   const hours = date.getUTCHours();
   const minutes = date.getUTCMinutes();
 
-  const formatData = (value, suffix, isVisible) => isVisible ? (`0` + value).slice(-2) + suffix : ``;
+  const formatData = (value, suffix, isVisible) => {
+    return isVisible ? (`0` + value).slice(-2) + suffix : ``;
+  };
 
   return [
     formatData(days, `D`, Boolean(days)),
@@ -21,4 +27,14 @@ const formatDiff = (date) => {
   ].join(` `);
 };
 
-export {formatTime, getDiffTime, formatDiff};
+const formatInputDate = (date) => {
+  const options = {
+    hour: `2-digit`,
+    minute: `2-digit`
+  };
+  const targetDate = new Date(date);
+
+  return `${targetDate.toLocaleDateString(`en-GB`)} ${targetDate.toLocaleTimeString(`en-GB`, options)}`;
+};
+
+export {formatTime, getDiffTime, formatDiff, formatDatetime, formatInputDate};

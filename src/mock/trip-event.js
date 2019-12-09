@@ -1,18 +1,12 @@
 import {getRandomArrayItem, getRandomInteger} from '../utils/random-values';
-import {types} from '../const';
+import {transferTypes, activityTypes, destinations, offers} from '../const';
 
 const getType = () => {
-  return getRandomArrayItem(types);
+  return getRandomArrayItem([...transferTypes, ...activityTypes]);
 };
 
 const getCity = () => {
-  const cities = [
-    `Geneva`,
-    `Chamonix`,
-    `Amsterdam`,
-  ];
-
-  return getRandomArrayItem(cities);
+  return getRandomArrayItem(destinations);
 };
 
 const getPhotos = () => {
@@ -54,28 +48,6 @@ const getPrice = () => {
 };
 
 const getOffers = () => {
-  const offers = [
-    {
-      type: `luggage`,
-      title: `Add luggage`,
-      price: 10
-    },
-    {
-      type: `comfort`,
-      title: `Switch to comfort class`,
-      price: 150
-    },
-    {
-      type: `meal`,
-      title: `Add meal`,
-      price: 2
-    },
-    {
-      type: `seats`,
-      title: `Choose seats`,
-      price: 9
-    }
-  ];
   const getOffersCount = () => getRandomInteger(0, 2);
   const getOffer = () => getRandomArrayItem(offers);
 

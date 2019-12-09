@@ -1,17 +1,17 @@
-import {formatTime, getDiffTime, formatDiff} from '../utils/format-time';
+import {formatTime, getDiffTime, formatDiff, formatDatetime} from '../utils/format-time';
 
 const getTimeMarkup = (startDate, endDate) => {
   const diff = getDiffTime(startDate, endDate);
 
   return (
     `<div class="event__schedule">
-        <p class="event__time">
-          <time class="event__start-time" datetime="2019-03-18T10:30">${formatTime(startDate)}</time>
-          &mdash;
-          <time class="event__end-time" datetime="2019-03-18T11:00">${formatTime(endDate)}</time>
-        </p>
-        <p class="event__duration">${formatDiff(diff)}</p>
-      </div>`
+      <p class="event__time">
+        <time class="event__start-time" datetime="${formatDatetime(startDate)}">${formatTime(startDate)}</time>
+        &mdash;
+        <time class="event__end-time" datetime="${formatDatetime(endDate)}">${formatTime(endDate)}</time>
+      </p>
+      <p class="event__duration">${formatDiff(diff)}</p>
+    </div>`
   );
 };
 
@@ -19,10 +19,10 @@ const getOffersMarkup = (offers) => {
   const offersMarkup = [...offers].map((offer) => {
     return (
       `<li class="event__offer">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-           </li>`
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;
+        &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+       </li>`
     );
   }).join(`\n`);
 
@@ -30,11 +30,13 @@ const getOffersMarkup = (offers) => {
 };
 
 const createTripEventTemplate = ({type, date, price, offers}) => {
+  const typeId = type.toLowerCase();
+
   return (
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${typeId}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">Taxi to airport</h3>
 
