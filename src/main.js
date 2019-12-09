@@ -15,7 +15,6 @@ const render = (container, template, place) => {
 const CARD_COUNT = 4;
 const tripEvents = createTripEvents(CARD_COUNT)
   .sort((a, b) => a.date.start - b.date.start);
-console.log(tripEvents);
 
 const tripInfo = document.querySelector(`.trip-info`);
 const totalCost = document.querySelector(`.trip-info__cost-value`);

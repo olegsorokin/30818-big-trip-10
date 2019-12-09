@@ -2,9 +2,8 @@ import {formatShortDate} from '../utils/format-time';
 import {createTripEventTemplate} from '../components/trip-event';
 
 const getDaysMarkup = (tripEvents) => {
-  const ONE_DAY = 1000 * 60 * 60 * 24;
   const getDate = (date) => {
-    return date - date % ONE_DAY;
+    return new Date(date).setHours(0, 0, 0, 0);
   };
   const uniqueDates = new Set(tripEvents.map((tripEvent) => getDate(tripEvent.date.start)));
 
