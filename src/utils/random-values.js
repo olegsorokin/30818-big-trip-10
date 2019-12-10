@@ -5,7 +5,7 @@ const getRandomArrayItem = (arr) => {
 };
 
 const getRandomInteger = (min, max) => {
-  return min + Math.round(Math.random() * (max - min));
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 export {getRandomArrayItem, getRandomInteger};
