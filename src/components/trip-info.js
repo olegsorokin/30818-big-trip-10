@@ -1,7 +1,8 @@
 import {getTripInfo} from '../mock/trip-info';
 import {formatShortDate} from '../utils/format-time';
+import {createElement} from '../utils';
 
-export const createInfoTemplate = (tripEvents) => {
+const createInfoTemplate = (tripEvents) => {
   const createTitleMarkup = () => {
     const cities = getTripInfo(tripEvents).cities;
     const lastIndexOfCities = cities.length - 1;
@@ -26,3 +27,26 @@ export const createInfoTemplate = (tripEvents) => {
     </div>`
   );
 };
+
+export default class Sort {
+  constructor(tripEvents) {
+    this._tripEvents = tripEvents;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createInfoTemplate(this._tripEvents);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

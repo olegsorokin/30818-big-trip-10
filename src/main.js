@@ -1,16 +1,12 @@
-import {createInfoTemplate} from './components/trip-info';
-import {createMenuTemplate} from './components/site-menu';
-import {createFiltersTemplate} from './components/filter';
-import {createSortTemplate} from './components/sort';
-import {createFormTripEventTemplate} from './components/trip-event-edit';
-import {createBoardTemplate} from './components/board';
+import TripInfoComponent from './components/trip-info';
+import SiteMenuComponent from './components/site-menu';
+import FilterComponent from './components/filter';
+import SortComponent from './components/sort';
+import BordComponent from './components/board';
 import {createTripEvents} from './mock/trip-event';
 import {MENU_ITEMS} from './mock/site-menu';
 import {FILTER} from './mock/filter';
-
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
+import {render, RenderPosition} from './utils';
 
 const CARD_COUNT = 4;
 const tripEvents = createTripEvents(CARD_COUNT)
@@ -32,9 +28,8 @@ const totalCostValue = tripEvents.reduce((acc, tripEvent) => {
 
 totalCost.innerHTML = String(totalCostValue);
 
-render(tripInfo, createInfoTemplate(tripEvents), `afterbegin`);
-render(menuTitle, createMenuTemplate(MENU_ITEMS), `afterend`);
-render(tripControls, createFiltersTemplate(FILTER), `beforeend`);
-render(pageTripEvents, createSortTemplate(), `beforeend`);
-render(pageTripEvents, createFormTripEventTemplate(tripEvents[0], 1), `beforeend`);
-render(pageTripEvents, createBoardTemplate(tripEvents.slice(1, CARD_COUNT)), `beforeend`);
+render(tripInfo, new TripInfoComponent(tripEvents).getElement(), RenderPosition.AFTERBEGIN);
+render(menuTitle, new SiteMenuComponent(MENU_ITEMS).getElement(), RenderPosition.AFTEREND);
+render(tripControls, new FilterComponent(FILTER).getElement(), RenderPosition.BEFOREEND);
+render(pageTripEvents, new SortComponent().getElement(), RenderPosition.BEFOREEND);
+render(pageTripEvents, new BordComponent(tripEvents.slice(0, CARD_COUNT)).getElement(), RenderPosition.BEFOREEND);

@@ -1,4 +1,5 @@
 import {formatShortDate} from '../utils/format-time';
+import {createElement} from '../utils.js';
 import {createTripEventTemplate} from '../components/trip-event';
 
 const getDaysMarkup = (tripEvents) => {
@@ -37,4 +38,25 @@ const createBoardTemplate = (tripEvents) => {
   );
 };
 
-export {createBoardTemplate};
+export default class Board {
+  constructor(tripEvents) {
+    this._tripEvents = tripEvents;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createBoardTemplate(this._tripEvents);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
