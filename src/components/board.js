@@ -1,51 +1,19 @@
 import {formatShortDate} from '../utils/format-time';
 import {createElement} from '../utils.js';
-import {createTripEventTemplate} from '../components/trip-event';
 
-const getDaysMarkup = (tripEvents) => {
-  const getDate = (date) => {
-    return new Date(date).setHours(0, 0, 0, 0);
-  };
-  const uniqueDates = new Set(tripEvents.map((tripEvent) => getDate(tripEvent.date.start)));
-
-  const getEventsByDate = (events, date) => {
-    const sortedEvents = events.filter((tripEvent) => getDate(tripEvent.date.start) === date);
-
-    return sortedEvents.map((tripEvent) => {
-      return createTripEventTemplate(tripEvent);
-    }).join(`\n`);
-  };
-
-  return [...uniqueDates].map((day, index) => {
-    return (
-      `<li class="trip-days__item  day">
-        <div class="day__info">
-          <span class="day__counter">${index + 1}</span>
-          <time class="day__date" datetime="2019-03-18">${formatShortDate(day)}</time>
-        </div>
-
-        <ul class="trip-events__list">${getEventsByDate(tripEvents, day)}</ul>
-      </li>`
-    );
-  }).join(`\n`);
-};
-
-const createBoardTemplate = (tripEvents) => {
+const createBoardTemplate = () => {
   return (
-    `<ul class="trip-days">
-      ${getDaysMarkup(tripEvents)}
-    </ul>`
+    `<ul class="trip-days"></ul>`
   );
 };
 
 export default class Board {
-  constructor(tripEvents) {
-    this._tripEvents = tripEvents;
+  constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createBoardTemplate(this._tripEvents);
+    return createBoardTemplate();
   }
 
   getElement() {

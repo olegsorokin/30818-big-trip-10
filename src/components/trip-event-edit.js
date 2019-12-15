@@ -1,5 +1,6 @@
 import {transferTypes, activityTypes, destinations, offers as offersList} from '../const';
 import {formatInputDate} from '../utils/format-time';
+import {createElement} from '../utils';
 
 const createTypeGroupMarkup = (title, types, index) => {
   const list = types.map((type) => {
@@ -85,7 +86,7 @@ const createOffersMarkup = (offers, index) => {
   );
 };
 
-export const createFormTripEventTemplate = ({type, city, description, date, price, photos, offers}, index) => {
+const createFormTripEventTemplate = ({type, city, description, date, price, photos, offers}, index = 1) => {
   const typeId = type.toLowerCase();
   const startDate = formatInputDate(date.start);
   const endDate = formatInputDate(date.end);
@@ -146,3 +147,27 @@ export const createFormTripEventTemplate = ({type, city, description, date, pric
     </form>`
   );
 };
+
+export default class TripEventForm {
+  constructor(tripEvent, tripEventIndex) {
+    this._tripEvent = tripEvent;
+    this._tripEventIndex = tripEventIndex;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFormTripEventTemplate(this._tripEvent, this._tripEventIndex);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,7 +1,7 @@
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
-  AFTEREND: `afterend`,
+  AFTEREND: `afterend`
 };
 
 const createElement = (template) => {
