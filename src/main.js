@@ -6,6 +6,7 @@ import BordComponent from './components/board';
 import DayComponent from './components/day';
 import TripEventComponent from './components/trip-event';
 import TripEventFormComponent from './components/trip-event-edit';
+import NoEventsComponent from './components/no-events';
 import {createTripEvents} from './mock/trip-event';
 import {MENU_ITEMS} from './mock/site-menu';
 import {FILTER} from './mock/filter';
@@ -87,6 +88,10 @@ const renderDays = (place, events) => {
   render(place, daysFragment, RenderPosition.BEFOREEND);
 };
 
-const bordComponent = new BordComponent().getElement();
-renderDays(bordComponent, tripEvents.slice(0, CARD_COUNT));
-render(pageTripEvents, bordComponent, RenderPosition.BEFOREEND);
+if (CARD_COUNT) {
+  const bordComponent = new BordComponent().getElement();
+  renderDays(bordComponent, tripEvents.slice(0, CARD_COUNT));
+  render(pageTripEvents, bordComponent, RenderPosition.BEFOREEND);
+} else {
+  render(pageTripEvents, new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
+}
