@@ -1,4 +1,3 @@
-import {formatShortDate} from '../utils/format-time';
 import {createElement} from '../utils.js';
 
 const createBoardTemplate = () => {
