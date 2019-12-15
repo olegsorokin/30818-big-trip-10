@@ -39,14 +39,27 @@ render(pageTripEvents, new SortComponent().getElement(), RenderPosition.BEFOREEN
 const renderEvent = (dayElement, tripEvent) => {
   const tripEventComponent = new TripEventComponent(tripEvent).getElement();
   const tripEventFormComponent = new TripEventFormComponent(tripEvent).getElement();
+  const onEscKeyDown = (event) => {
+    const isEscKey = event.key === `Escape` || event.key === `Esc`;
+
+    if (isEscKey) {
+      replaceFormToTripEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  const replaceTripEventToForm = () => dayElement.replaceChild(tripEventFormComponent, tripEventComponent);
+  const replaceFormToTripEvent = () => dayElement.replaceChild(tripEventComponent, tripEventFormComponent);
 
   const editButton = tripEventComponent.querySelector(`.event__rollup-btn`);
   editButton.addEventListener(`click`, () => {
-    dayElement.replaceChild(tripEventFormComponent, tripEventComponent);
+    replaceTripEventToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   tripEventFormComponent.addEventListener(`submit`, () => {
-    dayElement.replaceChild(tripEventComponent, tripEventFormComponent);
+    replaceFormToTripEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
   render(dayElement, tripEventComponent, RenderPosition.BEFOREEND);
