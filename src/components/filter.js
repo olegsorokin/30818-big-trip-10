@@ -1,4 +1,6 @@
-export const createFiltersTemplate = (list) => {
+import {createElement} from '../utils';
+
+const createFiltersTemplate = (list) => {
   const filterList = list.map((filterName, index) => {
     const filter = filterName.toLowerCase();
     const checked = index === 0 ? `checked` : ``;
@@ -19,3 +21,26 @@ export const createFiltersTemplate = (list) => {
     </form>`
   );
 };
+
+export default class Filter {
+  constructor(tripEvents) {
+    this._tripEvents = tripEvents;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFiltersTemplate(this._tripEvents);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
