@@ -3,6 +3,10 @@ import {formatShortDate} from '../utils/format-time';
 import {createElement} from '../utils';
 
 const createInfoTemplate = (tripEvents) => {
+  if (!tripEvents || !tripEvents.length) {
+    return ` `;
+  }
+
   const createTitleMarkup = () => {
     const cities = getTripInfo(tripEvents).cities;
     const lastIndexOfCities = cities.length - 1;
