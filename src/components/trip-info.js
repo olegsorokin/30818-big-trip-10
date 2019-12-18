@@ -1,6 +1,6 @@
 import {getTripInfo} from '../mock/trip-info';
 import {formatShortDate} from '../utils/format-time';
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
 const createInfoTemplate = (tripEvents) => {
   if (!tripEvents || !tripEvents.length) {
@@ -32,25 +32,14 @@ const createInfoTemplate = (tripEvents) => {
   );
 };
 
-export default class Sort {
+export default class Sort extends AbstractComponent {
   constructor(tripEvents) {
+    super();
+
     this._tripEvents = tripEvents;
-    this._element = null;
   }
 
   getTemplate() {
     return createInfoTemplate(this._tripEvents);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

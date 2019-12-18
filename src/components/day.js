@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 import {formatShortDate} from '../utils/format-time';
 
 const createDayTemplate = (day, index) => {
@@ -14,26 +14,15 @@ const createDayTemplate = (day, index) => {
   );
 };
 
-export default class Day {
+export default class Day extends AbstractComponent {
   constructor(day, dayIndex) {
+    super();
+
     this._day = day;
     this._dayIndex = dayIndex;
-    this._element = null;
   }
 
   getTemplate() {
     return createDayTemplate(this._day, this._dayIndex);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
