@@ -62,7 +62,7 @@ const renderDays = (container, events) => {
 };
 
 
-export default class BoardController {
+export default class TripController {
   constructor(container) {
     this._container = container;
 

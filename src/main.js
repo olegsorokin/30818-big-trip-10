@@ -1,7 +1,7 @@
 import TripInfoComponent from './components/trip-info';
 import SiteMenuComponent from './components/site-menu';
 import FilterComponent from './components/filter';
-import BoardController from './controllers/board';
+import TripController from './controllers/trip-controller';
 import {createTripEvents} from './mock/trip-event';
 import {MENU_ITEMS} from './mock/site-menu';
 import {FILTER} from './mock/filter';
@@ -31,5 +31,5 @@ render(tripInfo, new TripInfoComponent(tripEvents), RenderPosition.AFTERBEGIN);
 render(menuTitle, new SiteMenuComponent(MENU_ITEMS), RenderPosition.AFTEREND);
 render(tripControls, new FilterComponent(FILTER), RenderPosition.BEFOREEND);
 
-const boardController = new BoardController(pageTripEvents);
-boardController.render(tripEvents);
+const tripController = new TripController(pageTripEvents);
+tripController.render(tripEvents);
