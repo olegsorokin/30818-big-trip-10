@@ -10,7 +10,7 @@ import NoEventsComponent from './components/no-events';
 import {createTripEvents} from './mock/trip-event';
 import {MENU_ITEMS} from './mock/site-menu';
 import {FILTER} from './mock/filter';
-import {render, RenderPosition} from './utils';
+import {render, replace, RenderPosition} from './utils/render';
 
 const CARD_COUNT = 4;
 const tripEvents = createTripEvents(CARD_COUNT)
@@ -32,14 +32,14 @@ const totalCostValue = tripEvents.reduce((acc, tripEvent) => {
 
 totalCost.innerHTML = String(totalCostValue);
 
-render(tripInfo, new TripInfoComponent(tripEvents).getElement(), RenderPosition.AFTERBEGIN);
-render(menuTitle, new SiteMenuComponent(MENU_ITEMS).getElement(), RenderPosition.AFTEREND);
-render(tripControls, new FilterComponent(FILTER).getElement(), RenderPosition.BEFOREEND);
-render(pageTripEvents, new SortComponent().getElement(), RenderPosition.BEFOREEND);
+render(tripInfo, new TripInfoComponent(tripEvents), RenderPosition.AFTERBEGIN);
+render(menuTitle, new SiteMenuComponent(MENU_ITEMS), RenderPosition.AFTEREND);
+render(tripControls, new FilterComponent(FILTER), RenderPosition.BEFOREEND);
+render(pageTripEvents, new SortComponent(), RenderPosition.BEFOREEND);
 
 const renderEvent = (dayElement, tripEvent) => {
-  const tripEventComponent = new TripEventComponent(tripEvent).getElement();
-  const tripEventFormComponent = new TripEventFormComponent(tripEvent).getElement();
+  const tripEventComponent = new TripEventComponent(tripEvent);
+  const tripEventFormComponent = new TripEventFormComponent(tripEvent);
   const onEscKeyDown = (event) => {
     const isEscKey = event.key === `Escape` || event.key === `Esc`;
 
@@ -49,16 +49,20 @@ const renderEvent = (dayElement, tripEvent) => {
     }
   };
 
-  const replaceTripEventToForm = () => dayElement.replaceChild(tripEventFormComponent, tripEventComponent);
-  const replaceFormToTripEvent = () => dayElement.replaceChild(tripEventComponent, tripEventFormComponent);
+  const replaceTripEventToForm = () => {
+    replace(tripEventFormComponent, tripEventComponent);
+  };
 
-  const editButton = tripEventComponent.querySelector(`.event__rollup-btn`);
-  editButton.addEventListener(`click`, () => {
+  const replaceFormToTripEvent = () => {
+    replace(tripEventComponent, tripEventFormComponent);
+  };
+
+  tripEventComponent.setClickHandler(() => {
     replaceTripEventToForm();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  tripEventFormComponent.addEventListener(`submit`, () => {
+  tripEventFormComponent.setSubmitHandler(() => {
     replaceFormToTripEvent();
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
@@ -66,32 +70,30 @@ const renderEvent = (dayElement, tripEvent) => {
   render(dayElement, tripEventComponent, RenderPosition.BEFOREEND);
 };
 
-const renderDays = (place, events) => {
-  const daysFragment = document.createDocumentFragment();
+const renderDays = (events) => {
+  const bordComponent = new BordComponent();
   const getStartOfDate = (date) => {
     return new Date(date).setHours(0, 0, 0, 0);
   };
   const uniqueDates = new Set(events.map((tripEvent) => getStartOfDate(tripEvent.date.start)));
 
   [...uniqueDates].forEach((day, index) => {
-    const dayComponent = new DayComponent(day, index).getElement();
-    const dayEventsList = dayComponent.querySelector(`.trip-events__list`);
+    const dayComponent = new DayComponent(day, index);
+    const dayEventsList = dayComponent.getElement().querySelector(`.trip-events__list`);
     const eventsInDay = events.filter((tripEvent) => getStartOfDate(tripEvent.date.start) === day);
 
     if (eventsInDay.length) {
       eventsInDay.forEach((tripEvent) => renderEvent(dayEventsList, tripEvent));
     }
 
-    render(daysFragment, dayComponent, RenderPosition.BEFOREEND);
+    render(bordComponent.getElement(), dayComponent, RenderPosition.BEFOREEND);
   });
 
-  render(place, daysFragment, RenderPosition.BEFOREEND);
+  render(pageTripEvents, bordComponent, RenderPosition.BEFOREEND);
 };
 
 if (CARD_COUNT) {
-  const bordComponent = new BordComponent().getElement();
-  renderDays(bordComponent, tripEvents.slice(0, CARD_COUNT));
-  render(pageTripEvents, bordComponent, RenderPosition.BEFOREEND);
+  renderDays(tripEvents.slice(0, CARD_COUNT));
 } else {
   render(pageTripEvents, new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
 }

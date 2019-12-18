@@ -159,4 +159,8 @@ export default class TripEventForm extends AbstractComponent {
   getTemplate() {
     return createFormTripEventTemplate(this._tripEvent, this._tripEventIndex);
   }
+
+  setSubmitHandler(handler) {
+    this.getElement().addEventListener(`submit`, handler);
+  }
 }
