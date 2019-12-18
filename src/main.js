@@ -7,7 +7,7 @@ import {MENU_ITEMS} from './mock/site-menu';
 import {FILTER} from './mock/filter';
 import {render, RenderPosition} from './utils/render';
 
-const CARD_COUNT = 0;
+const CARD_COUNT = 4;
 const tripEvents = createTripEvents(CARD_COUNT)
   .sort((a, b) => a.date.start - b.date.start);
 
