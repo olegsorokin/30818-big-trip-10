@@ -53,7 +53,6 @@ export default class Sort extends AbstractComponent {
   }
 
   setChangeHandler(handler) {
-    // document.forms.tripSort.elements['trip-sort'].value
     this.getElement().addEventListener(`change`, (event) => {
       this._currenSortType = event.target.value;
 
