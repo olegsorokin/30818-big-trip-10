@@ -1,5 +1,5 @@
 import {formatTime, getDiffTime, formatDiff, formatDatetime} from '../utils/format-time';
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
 const getTimeMarkup = (startDate, endDate) => {
   const diff = getDiffTime(startDate, endDate);
@@ -58,25 +58,18 @@ const createTripEventTemplate = ({type, date, price, offers}) => {
   );
 };
 
-export default class TripEventForm {
+export default class TripEventForm extends AbstractComponent {
   constructor(tripEvent) {
+    super();
+
     this._tripEvent = tripEvent;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripEventTemplate(this._tripEvent);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
   }
 }

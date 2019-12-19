@@ -1,6 +1,6 @@
 import {transferTypes, activityTypes, destinations, offers as offersList} from '../const';
 import {formatInputDate} from '../utils/format-time';
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
 const createTypeGroupMarkup = (title, types, index) => {
   const list = types.map((type) => {
@@ -148,26 +148,19 @@ const createFormTripEventTemplate = ({type, city, description, date, price, phot
   );
 };
 
-export default class TripEventForm {
+export default class TripEventForm extends AbstractComponent {
   constructor(tripEvent, tripEventIndex) {
+    super();
+
     this._tripEvent = tripEvent;
     this._tripEventIndex = tripEventIndex;
-    this._element = null;
   }
 
   getTemplate() {
     return createFormTripEventTemplate(this._tripEvent, this._tripEventIndex);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setSubmitHandler(handler) {
+    this.getElement().addEventListener(`submit`, handler);
   }
 }

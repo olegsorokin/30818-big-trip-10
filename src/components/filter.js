@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
 const createFiltersTemplate = (list) => {
   const filterList = list.map((filterName, index) => {
@@ -22,25 +22,14 @@ const createFiltersTemplate = (list) => {
   );
 };
 
-export default class Filter {
+export default class Filter extends AbstractComponent {
   constructor(tripEvents) {
+    super();
+
     this._tripEvents = tripEvents;
-    this._element = null;
   }
 
   getTemplate() {
     return createFiltersTemplate(this._tripEvents);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
