@@ -2,42 +2,8 @@ import BordComponent from '../components/board';
 import DayComponent from '../components/day';
 import NoEventsComponent from '../components/no-events';
 import SortComponent, {SortType} from '../components/sort';
-import TripEventComponent from '../components/trip-event';
-import TripEventFormComponent from '../components/trip-event-edit';
-import {render, replace, RenderPosition} from '../utils/render';
-
-const renderEvent = (dayElement, tripEvent) => {
-  const tripEventComponent = new TripEventComponent(tripEvent);
-  const tripEventFormComponent = new TripEventFormComponent(tripEvent);
-  const onEscKeyDown = (event) => {
-    const isEscKey = event.key === `Escape` || event.key === `Esc`;
-
-    if (isEscKey) {
-      replaceFormToTripEvent();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const replaceTripEventToForm = () => {
-    replace(tripEventFormComponent, tripEventComponent);
-  };
-
-  const replaceFormToTripEvent = () => {
-    replace(tripEventComponent, tripEventFormComponent);
-  };
-
-  tripEventComponent.setClickHandler(() => {
-    replaceTripEventToForm();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  tripEventFormComponent.setSubmitHandler(() => {
-    replaceFormToTripEvent();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  render(dayElement, tripEventComponent, RenderPosition.BEFOREEND);
-};
+import {render, RenderPosition} from '../utils/render';
+import PointController from './point';
 
 const renderDays = (container, events) => {
   const getStartOfDate = (date) => {
@@ -51,7 +17,7 @@ const renderDays = (container, events) => {
     const eventsInDay = events.filter((tripEvent) => getStartOfDate(tripEvent.date.start) === day);
 
     if (eventsInDay.length) {
-      eventsInDay.forEach((tripEvent) => renderEvent(dayEventsList, tripEvent));
+      eventsInDay.forEach((tripEvent) => new PointController(dayEventsList).render(tripEvent));
     }
 
     render(container, dayComponent, RenderPosition.BEFOREEND);
@@ -62,7 +28,7 @@ const renderSortedEvents = (container, events) => {
   const dayComponent = new DayComponent();
   const dayEventsList = dayComponent.getElement().querySelector(`.trip-events__list`);
 
-  events.forEach((tripEvent) => renderEvent(dayEventsList, tripEvent));
+  events.forEach((tripEvent) => new PointController(dayEventsList).render(tripEvent));
 
   render(container, dayComponent, RenderPosition.BEFOREEND);
 };
