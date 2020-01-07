@@ -3,12 +3,20 @@ import TripEventFormComponent from '../components/trip-event-edit';
 import {render, RenderPosition, replace} from '../utils/render';
 import AbstractSmartComponent from '../components/abstract-smart-component';
 
+const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`
+};
+
 export default class PointController extends AbstractSmartComponent {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     super();
+
+    this._mode = Mode.DEFAULT;
 
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
 
     this._tripEventComponent = null;
     this._tripEventFormComponent = null;
@@ -17,9 +25,6 @@ export default class PointController extends AbstractSmartComponent {
   }
 
   render(tripEvent) {
-    const oldTripEventComponent = this._tripEventComponent;
-    const oldTripEventFormComponent = this._tripEventFormComponent;
-
     this._tripEventComponent = new TripEventComponent(tripEvent);
     this._tripEventFormComponent = new TripEventFormComponent(tripEvent);
 
@@ -44,15 +49,25 @@ export default class PointController extends AbstractSmartComponent {
     render(this._container, this._tripEventComponent, RenderPosition.BEFOREEND);
   }
 
-  recoveryListeners() {}
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToTripEvent();
+    }
+  }
 
   _replaceTripEventToForm() {
+    this._onViewChange();
+
     replace(this._tripEventFormComponent, this._tripEventComponent);
+    this._mode = Mode.EDIT;
+
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _replaceFormToTripEvent() {
     replace(this._tripEventComponent, this._tripEventFormComponent);
+    this._mode = Mode.DEFAULT;
+
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 

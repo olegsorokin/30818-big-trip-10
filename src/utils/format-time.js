@@ -1,13 +1,17 @@
+const getStartOfDate = (date) => {
+  return new Date(date).setHours(0, 0, 0, 0);
+};
+
+const getDiffTime = (start, end) => {
+  return new Date(Math.abs(end - start));
+};
+
 const formatTime = (timestamp) => {
   return new Date(timestamp).toLocaleTimeString(`en-GB`, {hour: `numeric`, minute: `numeric`});
 };
 
 const formatDatetime = (date) => {
   return new Date(date).toISOString().slice(0, -5);
-};
-
-const getDiffTime = (start, end) => {
-  return new Date(Math.abs(end - start));
 };
 
 const formatDiff = (date) => {
@@ -41,4 +45,4 @@ const formatShortDate = (date) => {
   return `${new Date(date).getDate()} ${new Date(date).toLocaleString(`en`, {month: `short`})}`;
 };
 
-export {formatTime, getDiffTime, formatDiff, formatDatetime, formatInputDate, formatShortDate};
+export {getStartOfDate, getDiffTime, formatTime, formatDiff, formatDatetime, formatInputDate, formatShortDate};
