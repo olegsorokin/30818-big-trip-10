@@ -23,14 +23,16 @@ export default class PointController extends AbstractSmartComponent {
     this._tripEventComponent = new TripEventComponent(tripEvent);
     this._tripEventFormComponent = new TripEventFormComponent(tripEvent);
 
-    this._tripEventComponent.setClickHandler(() => {
+    this._tripEventComponent.setRollupButtonClickHandler(() => {
       this._replaceTripEventToForm();
-      document.addEventListener(`keydown`, this._onEscKeyDown);
+    });
+
+    this._tripEventFormComponent.setRollupButtonClickHandler(() => {
+      this._replaceFormToTripEvent();
     });
 
     this._tripEventFormComponent.setSubmitHandler(() => {
       this._replaceFormToTripEvent();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
     this._tripEventFormComponent.setFavoriteChangeHandler((evt) => {
@@ -46,10 +48,12 @@ export default class PointController extends AbstractSmartComponent {
 
   _replaceTripEventToForm() {
     replace(this._tripEventFormComponent, this._tripEventComponent);
+    document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _replaceFormToTripEvent() {
     replace(this._tripEventComponent, this._tripEventFormComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _onEscKeyDown(event) {
@@ -57,7 +61,6 @@ export default class PointController extends AbstractSmartComponent {
 
     if (isEscKey) {
       this._replaceFormToTripEvent();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
 }

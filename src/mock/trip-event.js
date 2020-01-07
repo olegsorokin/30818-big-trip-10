@@ -77,4 +77,4 @@ const createTripEvents = (count) => {
   );
 };
 
-export {createTripEvents};
+export {createTripEvents, getOffers, getDescription};

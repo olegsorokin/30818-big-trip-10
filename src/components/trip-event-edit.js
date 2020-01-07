@@ -1,6 +1,7 @@
 import {transferTypes, activityTypes, destinations, offers as offersList} from '../const';
 import {formatInputDate} from '../utils/format-time';
 import AbstractSmartComponent from './abstract-smart-component';
+import {getOffers, getDescription} from '../mock/trip-event';
 
 const createTypeGroupMarkup = (title, types, currentType, index) => {
   const list = types.map((type) => {
@@ -101,8 +102,9 @@ const createOffersMarkup = (offers, index) => {
   );
 };
 
-const createFormTripEventTemplate = (tripEvent, index = 1) => {
-  const {type, city, description, date, price, photos, offers, isFavorite} = tripEvent;
+const createFormTripEventTemplate = (tripEvent, index = 1, options = {}) => {
+  const {date, price, photos} = tripEvent;
+  const {type, city, description, offers, isFavorite} = options;
   const typeId = type.toLowerCase();
   const startDate = formatInputDate(date.start);
   const endDate = formatInputDate(date.end);
@@ -148,6 +150,10 @@ const createFormTripEventTemplate = (tripEvent, index = 1) => {
         <button class="event__reset-btn" type="reset">Cancel</button>
 
         ${favoriteButton}
+
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>
       </header>
       <section class="event__details">
 
@@ -174,13 +180,24 @@ export default class TripEventForm extends AbstractSmartComponent {
 
     this._tripEvent = tripEvent;
     this._tripEventIndex = tripEventIndex;
+    this._type = tripEvent.type;
+    this._city = tripEvent.city;
+    this._description = tripEvent.description;
+    this._offers = Object.assign({}, tripEvent.offers);
+    this._isFavorite = tripEvent.isFavorite;
     this._submitHandler = null;
 
     this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createFormTripEventTemplate(this._tripEvent, this._tripEventIndex);
+    return createFormTripEventTemplate(this._tripEvent, this._tripEventIndex, {
+      type: this._type,
+      city: this._city,
+      description: this._description,
+      offers: this._offers,
+      isFavorite: this._isFavorite
+    });
   }
 
   recoveryListeners() {
@@ -192,6 +209,10 @@ export default class TripEventForm extends AbstractSmartComponent {
     super.rerender();
 
     this._applyFlatpickr();
+  }
+
+  setRollupButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
   }
 
   setSubmitHandler(handler) {
@@ -210,9 +231,25 @@ export default class TripEventForm extends AbstractSmartComponent {
     const element = this.getElement();
 
     element.querySelector(`.event__type-group`).addEventListener(`change`, (evt) => {
-      this._tripEvent.type = evt.target.value;
+      this._type = evt.target.value;
+      this._offers = getOffers();
 
       this.rerender();
+    });
+
+    element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, (evt) => {
+      this._isFavorite = evt.target.checked;
+
+      this.rerender();
+    });
+
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+      if (destinations.some((el) => el === evt.target.value)) {
+        this._city = evt.target.value;
+        this._description = getDescription();
+
+        this.rerender();
+      }
     });
   }
 }
