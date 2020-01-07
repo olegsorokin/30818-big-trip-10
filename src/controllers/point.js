@@ -1,10 +1,14 @@
 import TripEventComponent from '../components/trip-event';
 import TripEventFormComponent from '../components/trip-event-edit';
 import {render, RenderPosition, replace} from '../utils/render';
+import AbstractSmartComponent from '../components/abstract-smart-component';
 
-export default class PointController {
-  constructor(container) {
+export default class PointController extends AbstractSmartComponent {
+  constructor(container, onDataChange) {
+    super();
+
     this._container = container;
+    this._onDataChange = onDataChange;
 
     this._tripEventComponent = null;
     this._tripEventFormComponent = null;
@@ -13,10 +17,11 @@ export default class PointController {
   }
 
   render(tripEvent) {
-    this._tripEvent = tripEvent;
+    const oldTripEventComponent = this._tripEventComponent;
+    const oldTripEventFormComponent = this._tripEventFormComponent;
 
-    this._tripEventComponent = new TripEventComponent(this._tripEvent);
-    this._tripEventFormComponent = new TripEventFormComponent(this._tripEvent);
+    this._tripEventComponent = new TripEventComponent(tripEvent);
+    this._tripEventFormComponent = new TripEventFormComponent(tripEvent);
 
     this._tripEventComponent.setClickHandler(() => {
       this._replaceTripEventToForm();
@@ -28,7 +33,23 @@ export default class PointController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     });
 
+    this._tripEventFormComponent.setFavoriteChangeHandler((evt) => {
+      this._onDataChange(this, tripEvent, Object.assign({}, tripEvent, {
+        isFavorite: evt.target.value
+      }));
+    });
+
     render(this._container, this._tripEventComponent, RenderPosition.BEFOREEND);
+  }
+
+  recoveryListeners() {}
+
+  _replaceTripEventToForm() {
+    replace(this._tripEventFormComponent, this._tripEventComponent);
+  }
+
+  _replaceFormToTripEvent() {
+    replace(this._tripEventComponent, this._tripEventFormComponent);
   }
 
   _onEscKeyDown(event) {
@@ -38,13 +59,5 @@ export default class PointController {
       this._replaceFormToTripEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
-  }
-
-  _replaceTripEventToForm() {
-    replace(this._tripEventFormComponent, this._tripEventComponent);
-  }
-
-  _replaceFormToTripEvent() {
-    replace(this._tripEventComponent, this._tripEventFormComponent);
   }
 }
