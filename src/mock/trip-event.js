@@ -64,7 +64,8 @@ const createTripEvent = () => {
     description: getDescription(),
     date: getDate(),
     price: getPrice(),
-    offers: getOffers()
+    offers: getOffers(),
+    isFavorite: false
   });
 };
 
@@ -76,4 +77,4 @@ const createTripEvents = (count) => {
   );
 };
 
-export {createTripEvents};
+export {createTripEvents, getOffers, getDescription};

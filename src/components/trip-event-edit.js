@@ -1,14 +1,16 @@
 import {transferTypes, activityTypes, destinations, offers as offersList} from '../const';
 import {formatInputDate} from '../utils/format-time';
-import AbstractComponent from './abstract-component';
+import AbstractSmartComponent from './abstract-smart-component';
+import {getOffers, getDescription} from '../mock/trip-event';
 
-const createTypeGroupMarkup = (title, types, index) => {
+const createTypeGroupMarkup = (title, types, currentType, index) => {
   const list = types.map((type) => {
     const typeId = type.toLowerCase();
+    const checked = currentType === typeId ? `checked` : ``;
 
     return (
       `<div class="event__type-item">
-        <input id="event-type-${typeId}-${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeId}">
+        <input id="event-type-${typeId}-${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeId}" ${checked}>
         <label class="event__type-label  event__type-label--${typeId}" for="event-type-${typeId}-${index}">${type}</label>
       </div>`
     );
@@ -22,11 +24,11 @@ const createTypeGroupMarkup = (title, types, index) => {
   );
 };
 
-const createTypeListMarkup = (index) => {
+const createTypeListMarkup = (type, index) => {
   return (
     `<div class="event__type-list">
-      ${createTypeGroupMarkup(`Transfer`, transferTypes, index)}
-      ${createTypeGroupMarkup(`Activity`, activityTypes, index)}
+      ${createTypeGroupMarkup(`Transfer`, transferTypes, type, index)}
+      ${createTypeGroupMarkup(`Activity`, activityTypes, type, index)}
     </div>`
   );
 };
@@ -63,6 +65,20 @@ const createPhotosMarkup = (photos) => {
   );
 };
 
+const createFavoriteButtonMarkup = (isFavorite) => {
+  const checked = isFavorite ? `checked` : ``;
+
+  return (
+    `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${checked}>
+    <label class="event__favorite-btn" for="event-favorite-1">
+      <span class="visually-hidden">Add to favorite</span>
+      <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+        <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+      </svg>
+    </label>`
+  );
+};
+
 const createOffersMarkup = (offers, index) => {
   const list = offersList.map(({type, title, price}) => {
     const checked = offers.size && [...offers].find((offer) => offer.title === title) ? `checked` : ``;
@@ -86,10 +102,14 @@ const createOffersMarkup = (offers, index) => {
   );
 };
 
-const createFormTripEventTemplate = ({type, city, description, date, price, photos, offers}, index = 1) => {
+const createFormTripEventTemplate = (tripEvent, index = 1, options = {}) => {
+  const {date, price, photos} = tripEvent;
+  const {type, city, description, offers, isFavorite} = options;
   const typeId = type.toLowerCase();
   const startDate = formatInputDate(date.start);
   const endDate = formatInputDate(date.end);
+
+  const favoriteButton = createFavoriteButtonMarkup(isFavorite);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -101,7 +121,7 @@ const createFormTripEventTemplate = ({type, city, description, date, price, phot
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${index}" type="checkbox">
 
-          ${createTypeListMarkup(index)}
+          ${createTypeListMarkup(typeId, index)}
         </div>
 
         ${createDestinationList(city, index)}
@@ -128,6 +148,12 @@ const createFormTripEventTemplate = ({type, city, description, date, price, phot
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
+
+        ${favoriteButton}
+
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>
       </header>
       <section class="event__details">
 
@@ -148,19 +174,82 @@ const createFormTripEventTemplate = ({type, city, description, date, price, phot
   );
 };
 
-export default class TripEventForm extends AbstractComponent {
+export default class TripEventForm extends AbstractSmartComponent {
   constructor(tripEvent, tripEventIndex) {
     super();
 
     this._tripEvent = tripEvent;
     this._tripEventIndex = tripEventIndex;
+    this._type = tripEvent.type;
+    this._city = tripEvent.city;
+    this._description = tripEvent.description;
+    this._offers = Object.assign({}, tripEvent.offers);
+    this._isFavorite = tripEvent.isFavorite;
+    this._submitHandler = null;
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createFormTripEventTemplate(this._tripEvent, this._tripEventIndex);
+    return createFormTripEventTemplate(this._tripEvent, this._tripEventIndex, {
+      type: this._type,
+      city: this._city,
+      description: this._description,
+      offers: this._offers,
+      isFavorite: this._isFavorite
+    });
+  }
+
+  recoveryListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
+  }
+
+  setRollupButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
   }
 
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
+  }
+
+  setFavoriteChangeHandler(handler) {
+    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, handler);
+  }
+
+  _applyFlatpickr() {}
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+
+    element.querySelector(`.event__type-group`).addEventListener(`change`, (evt) => {
+      this._type = evt.target.value;
+      this._offers = getOffers();
+
+      this.rerender();
+    });
+
+    element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, (evt) => {
+      this._isFavorite = evt.target.checked;
+
+      this.rerender();
+    });
+
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+      if (destinations.some((el) => el === evt.target.value)) {
+        this._city = evt.target.value;
+        this._description = getDescription();
+
+        this.rerender();
+      }
+    });
   }
 }
