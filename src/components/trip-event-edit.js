@@ -1,5 +1,7 @@
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/light.css';
 import {transferTypes, activityTypes, destinations, offers as offersList} from '../const';
-import {formatInputDate} from '../utils/format-time';
 import AbstractSmartComponent from './abstract-smart-component';
 import {getOffers, getDescription} from '../mock/trip-event';
 
@@ -106,8 +108,8 @@ const createFormTripEventTemplate = (tripEvent, index = 1, options = {}) => {
   const {date, price, photos} = tripEvent;
   const {type, city, description, offers, isFavorite} = options;
   const typeId = type.toLowerCase();
-  const startDate = formatInputDate(date.start);
-  const endDate = formatInputDate(date.end);
+  const startDate = date.start;
+  const endDate = date.end;
 
   const favoriteButton = createFavoriteButtonMarkup(isFavorite);
 
@@ -187,7 +189,11 @@ export default class TripEventForm extends AbstractSmartComponent {
     this._isFavorite = tripEvent.isFavorite;
     this._submitHandler = null;
 
+    this._flatpickrStart = null;
+    this._flatpickrEnd = null;
+
     this._subscribeOnEvents();
+    this._applyFlatpickr();
   }
 
   getTemplate() {
@@ -225,7 +231,34 @@ export default class TripEventForm extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, handler);
   }
 
-  _applyFlatpickr() {}
+  _applyFlatpickr() {
+    if (this._flatpickrStart) {
+      this._flatpickrStart.destroy();
+      this._flatpickrStart = null;
+    }
+
+    if (this._flatpickrEnd) {
+      this._flatpickrEnd.destroy();
+      this._flatpickrEnd = null;
+    }
+
+    const dateStartElement = this.getElement().querySelector(`input[name="event-start-time"]`);
+    this._flatpickrStart = flatpickr(dateStartElement, {
+      allowInput: true,
+      dateFormat: `d/m/y H:i`,
+      defaultDate: this._tripEvent.date.start || new Date(),
+      enableTime: true,
+    });
+
+    const dateEndElement = this.getElement().querySelector(`input[name="event-end-time"]`);
+    this._flatpickrEnd = flatpickr(dateEndElement, {
+      allowInput: true,
+      dateFormat: `d/m/y H:i`,
+      defaultDate: this._tripEvent.date.end || new Date(),
+      enableTime: true,
+      minDate: this._tripEvent.date.start
+    });
+  }
 
   _subscribeOnEvents() {
     const element = this.getElement();
