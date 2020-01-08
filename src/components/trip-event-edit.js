@@ -2,7 +2,6 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/light.css';
 import {transferTypes, activityTypes, destinations, offers as offersList} from '../const';
-import {formatInputDate} from '../utils/format-time';
 import AbstractSmartComponent from './abstract-smart-component';
 import {getOffers, getDescription} from '../mock/trip-event';
 
@@ -109,8 +108,8 @@ const createFormTripEventTemplate = (tripEvent, index = 1, options = {}) => {
   const {date, price, photos} = tripEvent;
   const {type, city, description, offers, isFavorite} = options;
   const typeId = type.toLowerCase();
-  const startDate = formatInputDate(date.start);
-  const endDate = formatInputDate(date.end);
+  const startDate = date.start;
+  const endDate = date.end;
 
   const favoriteButton = createFavoriteButtonMarkup(isFavorite);
 
