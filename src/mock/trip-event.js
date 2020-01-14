@@ -58,6 +58,7 @@ const getOffers = () => {
 
 const createTripEvent = () => {
   return ({
+    id: String(new Date() + Math.random()),
     type: getType(),
     city: getCity(),
     photos: getPhotos(),

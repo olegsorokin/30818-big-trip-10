@@ -3,7 +3,7 @@ import TripEventFormComponent from '../components/trip-event-edit';
 import {render, RenderPosition, replace} from '../utils/render';
 import AbstractSmartComponent from '../components/abstract-smart-component';
 
-const Mode = {
+export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`
 };
@@ -24,7 +24,8 @@ export default class PointController extends AbstractSmartComponent {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(tripEvent) {
+  render(tripEvent, mode) {
+    this._mode = mode;
     this._tripEventComponent = new TripEventComponent(tripEvent);
     this._tripEventFormComponent = new TripEventFormComponent(tripEvent);
 
