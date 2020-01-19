@@ -6,6 +6,8 @@ import {render, RenderPosition} from '../utils/render';
 import {getStartOfDate} from '../utils/format-time';
 import PointController, {Mode as PointControllerMode} from './points';
 
+const POINTS_COUNT = 4;
+
 const renderDays = (container, events, onDataChange, onViewChange) => {
   const controllersList = [];
   const uniqueDates = new Set(events.map((tripEvent) => getStartOfDate(tripEvent.date.start)));
@@ -49,7 +51,7 @@ const renderSortedEvents = (container, events, onDataChange, onViewChange) => {
 export default class TripController {
   constructor(container, tasksModel) {
     this._container = container;
-    this._tasksModel = tasksModel;
+    this._pointsModel = tasksModel;
 
     this._pointControllers = [];
 
@@ -59,10 +61,13 @@ export default class TripController {
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
+
+    this._pointsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
-    const points = this._tasksModel.getPoints();
+    const points = this._pointsModel.getPoints();
     const container = this._container;
 
     if (!points.length) {
@@ -94,8 +99,19 @@ export default class TripController {
     });
   }
 
+  _removePoints() {
+    this._pointControllers.forEach((pointController) => pointController.destroy());
+    this._pointControllers = [];
+    this._container.querySelectorAll(`.day`).forEach((day) => day.remove());
+  }
+
+  _updatePoints(count) {
+    this._removePoints();
+    this.render(this._pointsModel.getPoints().slice(0, count));
+  }
+
   _onDataChange(pointController, oldData, newData) {
-    const isSuccess = this._tasksModel.updatePoints(oldData.id, newData);
+    const isSuccess = this._pointsModel.updatePoints(oldData.id, newData);
 
     if (isSuccess) {
       pointController.render(newData, PointControllerMode.DEFAULT);
@@ -104,5 +120,9 @@ export default class TripController {
 
   _onViewChange() {
     this._pointControllers.forEach((it) => it.setDefaultView());
+  }
+
+  _onFilterChange() {
+    this._updatePoints(POINTS_COUNT);
   }
 }

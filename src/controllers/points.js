@@ -1,6 +1,6 @@
 import TripEventComponent from '../components/trip-event';
 import TripEventFormComponent from '../components/trip-event-edit';
-import {render, RenderPosition, replace} from '../utils/render';
+import {render, RenderPosition, replace, remove} from '../utils/render';
 import AbstractSmartComponent from '../components/abstract-smart-component';
 
 export const Mode = {
@@ -54,6 +54,12 @@ export default class PointController extends AbstractSmartComponent {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToTripEvent();
     }
+  }
+
+  destroy() {
+    remove(this._tripEventFormComponent);
+    remove(this._tripEventComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _replaceTripEventToForm() {

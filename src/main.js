@@ -1,11 +1,10 @@
 import TripInfoComponent from './components/trip-info';
 import SiteMenuComponent from './components/site-menu';
-import FilterComponent from './components/filter';
 import TripController from './controllers/trip-controller';
+import FilterController from './controllers/filter';
 import PointsModel from './models/points';
 import {createTripEvents} from './mock/trip-event';
 import {MENU_ITEMS} from './mock/site-menu';
-import {FILTER} from './mock/filter';
 import {render, RenderPosition} from './utils/render';
 
 const CARD_COUNT = 4;
@@ -32,7 +31,9 @@ totalCost.innerHTML = String(totalCostValue);
 
 render(tripInfo, new TripInfoComponent(tripEvents), RenderPosition.AFTERBEGIN);
 render(menuTitle, new SiteMenuComponent(MENU_ITEMS), RenderPosition.AFTEREND);
-render(tripControls, new FilterComponent(FILTER), RenderPosition.BEFOREEND);
+
+const filterController = new FilterController(tripControls, pointsModel);
+filterController.render();
 
 const tripController = new TripController(pageTripEvents, pointsModel);
 tripController.render();
