@@ -52,7 +52,7 @@ export default class Sort extends AbstractComponent {
     return createSortTemplate();
   }
 
-  setChangeHandler(handler) {
+  setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`change`, (event) => {
       this._currenSortType = event.target.value;
 

@@ -1,3 +1,4 @@
+import {getPointsByFilter} from '../utils/filters';
 import {FilterType} from '../const';
 
 export default class PointsModel {
@@ -11,6 +12,10 @@ export default class PointsModel {
   }
 
   getPoints() {
+    return getPointsByFilter(this._points, this._activeFilterType);
+  }
+
+  getPointsAll() {
     return this._points;
   }
 

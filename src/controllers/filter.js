@@ -1,6 +1,6 @@
 import FilterComponent from '../components/filter';
-import {render, RenderPosition} from '../utils/render';
 import {FilterType} from '../const';
+import {render, RenderPosition} from '../utils/render';
 
 export default class Filter {
   constructor(container, pointsModel) {
@@ -11,7 +11,6 @@ export default class Filter {
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
-
     this._pointsModel.setDataChangeHandler(this._onDataChange);
   }
 
