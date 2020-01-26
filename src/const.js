@@ -51,4 +51,10 @@ const FilterType = {
   PAST: `past`
 };
 
-export {transferTypes, activityTypes, destinations, offers, FilterType};
+const SortType = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`
+};
+
+export {transferTypes, activityTypes, destinations, offers, FilterType, SortType};
