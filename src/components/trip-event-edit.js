@@ -149,7 +149,7 @@ const createFormTripEventTemplate = (tripEvent, index = 1, options = {}) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">Delete</button>
 
         ${favoriteButton}
 
@@ -182,12 +182,16 @@ export default class TripEventForm extends AbstractSmartComponent {
 
     this._tripEvent = tripEvent;
     this._tripEventIndex = tripEventIndex;
+
     this._type = tripEvent.type;
     this._city = tripEvent.city;
     this._description = tripEvent.description;
     this._offers = Object.assign({}, tripEvent.offers);
     this._isFavorite = tripEvent.isFavorite;
-    this._submitHandler = null;
+
+    this._onSubmitHandler = null;
+    this._onRollupButtonClickHandler = null;
+    this._onDeleteButtonClickHandler = null;
 
     this._flatpickrStart = null;
     this._flatpickrEnd = null;
@@ -207,7 +211,9 @@ export default class TripEventForm extends AbstractSmartComponent {
   }
 
   recoveryListeners() {
-    this.setSubmitHandler(this._submitHandler);
+    this.setSubmitHandler(this._onSubmitHandler);
+    this.setRollupButtonClickHandler(this._onRollupButtonClickHandler);
+    this.setDeleteButtonClickHandler(this._onDeleteButtonClickHandler);
     this._subscribeOnEvents();
   }
 
@@ -219,16 +225,24 @@ export default class TripEventForm extends AbstractSmartComponent {
 
   setRollupButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
+
+    this._onRollupButtonClickHandler = handler;
   }
 
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
 
-    this._submitHandler = handler;
+    this._onSubmitHandler = handler;
   }
 
   setFavoriteChangeHandler(handler) {
     this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, handler);
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
+
+    this._onDeleteButtonClickHandler = handler;
   }
 
   _applyFlatpickr() {

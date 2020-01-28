@@ -4,18 +4,18 @@ import {FilterType, SortType} from '../const';
 export default class PointsModel {
   constructor() {
     this._points = [];
-    this._modifiedPoints = [];
 
     this._activeFilterType = FilterType.EVERYTHING;
     this._activeSortType = SortType.EVENT;
 
-    this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
+    this._sortChangeHandlers = [];
+    this._dataChangeHandlers = [];
   }
 
   getPoints() {
-    this._modifiedPoints = this._sortPoints(this._modifiedPoints, this._activeSortType);
-    return getPointsByFilter(this._modifiedPoints, this._activeFilterType);
+    const sortPoints = this._sortPoints(this._points, this._activeSortType);
+    return getPointsByFilter(sortPoints, this._activeFilterType);
   }
 
   getPointsAll() {
@@ -28,7 +28,6 @@ export default class PointsModel {
 
   setPoints(points) {
     this._points = Array.from(points);
-    this._modifiedPoints = Array.from(points);
   }
 
   setFilter(filterType) {
@@ -38,26 +37,39 @@ export default class PointsModel {
 
   setSortType(sortType) {
     this._activeSortType = sortType;
-  }
-
-  updatePoints(id, point) {
-    const index = this._modifiedPoints.findIndex((it) => it.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-
-    this._modifiedPoints = [].concat(this._modifiedPoints.slice(0, index), point, this._modifiedPoints.slice(index + 1));
-
-    return true;
+    this._callHandlers(this._sortChangeHandlers);
   }
 
   setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
   }
 
+  setSortChangeHandler(handler) {
+    this._sortChangeHandlers.push(handler);
+  }
+
   setDataChangeHandler(handler) {
     this._dataChangeHandlers.push(handler);
+  }
+
+  removePoint(id) {
+    const index = this._points.findIndex((point) => point.id === id);
+
+    this._points = [].concat(this._points.slice(0, index), this._points.slice(index + 1));
+
+    return true;
+  }
+
+  updatePoints(id, point) {
+    const index = this._points.findIndex((it) => it.id === id);
+
+    if (index === -1) {
+      return false;
+    }
+
+    this._points = [].concat(this._points.slice(0, index), point, this._points.slice(index + 1));
+
+    return true;
   }
 
   _sortPoints(points, sortType) {

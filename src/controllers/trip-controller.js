@@ -4,7 +4,7 @@ import NoEventsComponent from '../components/no-events';
 import SortComponent from '../components/sort';
 import {render, RenderPosition} from '../utils/render';
 import {getStartOfDate} from '../utils/format-time';
-import PointController, {Mode as PointControllerMode} from './points';
+import PointController, {Mode as PointControllerMode} from './point';
 import {SortType} from '../const';
 
 const renderDays = (container, events, onDataChange, onViewChange) => {
@@ -105,6 +105,10 @@ export default class TripController {
   }
 
   _onDataChange(pointController, oldData, newData) {
+    if (newData === null) {
+      this._pointsModel.removePoint(oldData.id);
+    }
+
     const isSuccess = this._pointsModel.updatePoints(oldData.id, newData);
 
     if (isSuccess) {

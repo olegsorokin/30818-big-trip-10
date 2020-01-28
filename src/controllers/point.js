@@ -41,6 +41,10 @@ export default class PointController extends AbstractSmartComponent {
       this._replaceFormToTripEvent();
     });
 
+    this._tripEventFormComponent.setDeleteButtonClickHandler(() => {
+      this._onDataChange(this, tripEvent, Object.assign({}, tripEvent, null));
+    });
+
     this._tripEventFormComponent.setFavoriteChangeHandler((evt) => {
       this._onDataChange(this, tripEvent, Object.assign({}, tripEvent, {
         isFavorite: evt.target.value
