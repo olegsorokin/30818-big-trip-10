@@ -52,6 +52,11 @@ export default class PointsModel {
     this._dataChangeHandlers.push(handler);
   }
 
+  addPoint(point) {
+    this._points = [].concat(point, this._points);
+    this._callHandlers(this._dataChangeHandlers);
+  }
+
   removePoint(id) {
     const index = this._points.findIndex((point) => point.id === id);
 

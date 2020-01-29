@@ -176,6 +176,22 @@ const createFormTripEventTemplate = (tripEvent, index = 1, options = {}) => {
   );
 };
 
+const parseFormData = (formData) => {
+  return {
+    type: transferTypes[0],
+    city: ``,
+    photos: [],
+    description: ``,
+    date: {
+      start: null,
+      end: null
+    },
+    price: 0,
+    offers: [],
+    isFavorite: false
+  };
+};
+
 export default class TripEventForm extends AbstractSmartComponent {
   constructor(tripEvent, tripEventIndex) {
     super();
@@ -208,6 +224,13 @@ export default class TripEventForm extends AbstractSmartComponent {
       offers: this._offers,
       isFavorite: this._isFavorite
     });
+  }
+
+  getData() {
+    const form = this.getElement().querySelector(`.card__form`);
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
   }
 
   recoveryListeners() {

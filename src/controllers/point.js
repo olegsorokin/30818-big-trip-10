@@ -2,10 +2,26 @@ import TripEventComponent from '../components/trip-event';
 import TripEventFormComponent from '../components/trip-event-edit';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import AbstractSmartComponent from '../components/abstract-smart-component';
+import {transferTypes} from '../const';
 
 export const Mode = {
+  ADDING: `adding`,
   DEFAULT: `default`,
   EDIT: `edit`
+};
+
+export const EmptyEvent = {
+  type: transferTypes[0],
+  city: ``,
+  photos: [],
+  description: ``,
+  date: {
+    start: null,
+    end: null
+  },
+  price: 0,
+  offers: [],
+  isFavorite: false
 };
 
 export default class PointController extends AbstractSmartComponent {
@@ -37,8 +53,10 @@ export default class PointController extends AbstractSmartComponent {
       this._replaceFormToTripEvent();
     });
 
-    this._tripEventFormComponent.setSubmitHandler(() => {
-      this._replaceFormToTripEvent();
+    this._tripEventFormComponent.setSubmitHandler((evt) => {
+      evt.preventDefault();
+      this._tripEventFormComponent.getData();
+      // this._replaceFormToTripEvent();
     });
 
     this._tripEventFormComponent.setDeleteButtonClickHandler(() => {
@@ -86,6 +104,10 @@ export default class PointController extends AbstractSmartComponent {
     const isEscKey = event.key === `Escape` || event.key === `Esc`;
 
     if (isEscKey) {
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, EmptyEvent, null);
+      }
+
       this._replaceFormToTripEvent();
     }
   }

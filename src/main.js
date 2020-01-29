@@ -1,6 +1,6 @@
 import TripInfoComponent from './components/trip-info';
 import SiteMenuComponent from './components/site-menu';
-import TripController from './controllers/trip-controller';
+import TripController from './controllers/trip';
 import FilterController from './controllers/filter';
 import PointsModel from './models/points';
 import {createTripEvents} from './mock/trip-event';
