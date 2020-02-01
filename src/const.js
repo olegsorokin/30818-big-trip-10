@@ -1,3 +1,5 @@
+const HIDDEN_CLASS = `visually-hidden`;
+
 const transferTypes = [
   `Bus`,
   `Drive`,
@@ -57,4 +59,4 @@ const SortType = {
   PRICE: `price`
 };
 
-export {transferTypes, activityTypes, destinations, offers, FilterType, SortType};
+export {HIDDEN_CLASS, transferTypes, activityTypes, destinations, offers, FilterType, SortType};

@@ -5,7 +5,7 @@ import SortComponent from '../components/sort';
 import {render, RenderPosition, remove} from '../utils/render';
 import {getStartOfDate} from '../utils/format-time';
 import PointController, {EmptyEvent, Mode as PointControllerMode} from './point';
-import {SortType} from '../const';
+import {HIDDEN_CLASS, SortType} from '../const';
 
 const renderDays = (container, events, onDataChange, onViewChange) => {
   const controllersList = [];
@@ -66,6 +66,14 @@ export default class Trip {
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
     this._pointsModel.setFilterChangeHandler(this._onFilterChange);
+  }
+
+  show() {
+    this._container.classList.remove(HIDDEN_CLASS);
+  }
+
+  hide() {
+    this._container.classList.add(HIDDEN_CLASS);
   }
 
   render() {
