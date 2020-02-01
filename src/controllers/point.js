@@ -43,7 +43,7 @@ export default class PointController extends AbstractSmartComponent {
   render(tripEvent, mode) {
     this._mode = mode;
     this._tripEventComponent = new TripEventComponent(tripEvent);
-    this._tripEventFormComponent = new TripEventFormComponent(tripEvent);
+    this._tripEventFormComponent = new TripEventFormComponent(tripEvent, mode);
 
     this._tripEventComponent.setRollupButtonClickHandler(() => {
       this._replaceTripEventToForm();
@@ -56,13 +56,23 @@ export default class PointController extends AbstractSmartComponent {
     this._tripEventFormComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       const data = this._tripEventFormComponent.getData();
-      this._onDataChange(this, tripEvent, data);
+
+      switch (this._mode) {
+        case Mode.ADDING:
+          this._onDataChange(this, null, data);
+          break;
+        case Mode.EDIT:
+          this._onDataChange(this, tripEvent, data);
+          break;
+      }
+
       this._replaceFormToTripEvent();
     });
 
     this._tripEventFormComponent.setDeleteButtonClickHandler(() => {
       switch (this._mode) {
         case Mode.ADDING:
+          this._onDataChange(this, null, null);
           this.destroy();
           break;
         case Mode.EDIT:
@@ -131,7 +141,9 @@ export default class PointController extends AbstractSmartComponent {
 
     if (isEscKey) {
       if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, null, null);
         this.destroy();
+
         return;
       }
 

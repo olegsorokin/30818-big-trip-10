@@ -53,6 +53,7 @@ export default class PointsModel {
   }
 
   addPoint(point) {
+    point.id = String(Date.now() + Math.random());
     this._points = [].concat(point, this._points);
     this._callHandlers(this._dataChangeHandlers);
   }

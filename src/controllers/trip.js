@@ -80,6 +80,8 @@ export default class Trip {
 
   createEvent() {
     if (this._creatingEvent) {
+      this._updatePoints();
+
       return;
     }
 
@@ -114,6 +116,7 @@ export default class Trip {
   _removePoints() {
     // this._pointControllers.forEach((pointController) => pointController.destroy());
     this._pointControllers = [];
+    this._creatingEvent = null;
     // this._container.querySelectorAll(`.day`).forEach((day) => day.remove());
     this._bordComponent.getElement().innerHTML = ``;
     // this._noEventsComponent.getElement().remove();
@@ -126,9 +129,24 @@ export default class Trip {
   }
 
   _onDataChange(pointController, oldData, newData) {
+    this._creatingEvent = null;
+
+    if (oldData === null) {
+      if (newData === null) {
+        return;
+      }
+
+      this._pointsModel.addPoint(newData);
+      this._updatePoints();
+
+      return;
+    }
+
     if (newData === null) {
       this._pointsModel.removePoint(oldData.id);
       this._updatePoints();
+
+      return;
     }
 
     const isSuccess = this._pointsModel.updatePoints(oldData.id, newData);

@@ -10,7 +10,7 @@ export const getFuturePoints = (points) => {
 };
 
 export const getPastPoints = (points) => {
-  return points.filter((point) => isPastDate(point.date.start));
+  return points.filter((point) => isPastDate(point.date.end));
 };
 
 export const getPointsByFilter = (points, filterType) => {
