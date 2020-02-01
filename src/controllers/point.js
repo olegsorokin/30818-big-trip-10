@@ -55,12 +55,20 @@ export default class PointController extends AbstractSmartComponent {
 
     this._tripEventFormComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      this._tripEventFormComponent.getData();
-      // this._replaceFormToTripEvent();
+      const data = this._tripEventFormComponent.getData();
+      this._onDataChange(this, tripEvent, data);
+      this._replaceFormToTripEvent();
     });
 
     this._tripEventFormComponent.setDeleteButtonClickHandler(() => {
-      this._onDataChange(this, tripEvent, Object.assign({}, tripEvent, null));
+      switch (this._mode) {
+        case Mode.ADDING:
+          this.destroy();
+          break;
+        case Mode.EDIT:
+          this._onDataChange(this, tripEvent, null);
+          break;
+      }
     });
 
     this._tripEventFormComponent.setFavoriteChangeHandler((evt) => {
@@ -69,12 +77,30 @@ export default class PointController extends AbstractSmartComponent {
       }));
     });
 
-    render(this._container, this._tripEventComponent, RenderPosition.BEFOREEND);
+    switch (mode) {
+      case Mode.DEFAULT:
+        render(this._container, this._tripEventComponent, RenderPosition.BEFOREEND);
+        break;
+      case Mode.ADDING:
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+
+        render(this._container, this._tripEventFormComponent, RenderPosition.AFTERBEGIN);
+        break;
+    }
+  }
+
+  getMode() {
+    return this._mode;
   }
 
   setDefaultView() {
-    if (this._mode !== Mode.DEFAULT) {
-      this._replaceFormToTripEvent();
+    switch (this._mode) {
+      case Mode.EDIT:
+        this._replaceFormToTripEvent();
+        break;
+      case Mode.ADDING:
+        this.destroy();
+        break;
     }
   }
 
@@ -105,7 +131,8 @@ export default class PointController extends AbstractSmartComponent {
 
     if (isEscKey) {
       if (this._mode === Mode.ADDING) {
-        this._onDataChange(this, EmptyEvent, null);
+        this.destroy();
+        return;
       }
 
       this._replaceFormToTripEvent();

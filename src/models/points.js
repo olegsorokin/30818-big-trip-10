@@ -61,8 +61,6 @@ export default class PointsModel {
     const index = this._points.findIndex((point) => point.id === id);
 
     this._points = [].concat(this._points.slice(0, index), this._points.slice(index + 1));
-
-    return true;
   }
 
   updatePoints(id, point) {

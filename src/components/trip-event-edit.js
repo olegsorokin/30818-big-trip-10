@@ -3,7 +3,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/light.css';
 import {transferTypes, activityTypes, destinations, offers as offersList} from '../const';
 import AbstractSmartComponent from './abstract-smart-component';
-import {getOffers, getDescription} from '../mock/trip-event';
+import {getOffers, getDescription, getPhotos} from '../mock/trip-event';
 
 const createTypeGroupMarkup = (title, types, currentType, index) => {
   const list = types.map((type) => {
@@ -178,17 +178,18 @@ const createFormTripEventTemplate = (tripEvent, index = 1, options = {}) => {
 
 const parseFormData = (formData) => {
   return {
-    type: transferTypes[0],
-    city: ``,
-    photos: [],
-    description: ``,
+    type: formData.get(`event-type`),
+    city: formData.get(`event-destination`),
+    photos: getPhotos(),
+    description: getDescription(),
     date: {
-      start: null,
-      end: null
+      // start: formData.get(`event-start-time`),
+      // end: formData.get(`event-end-time`)
+      start: 0,
+      end: 0
     },
-    price: 0,
-    offers: [],
-    isFavorite: false
+    price: formData.get(`event-price`),
+    isFavorite: formData.get(`event-favorite`)
   };
 };
 
@@ -227,10 +228,10 @@ export default class TripEventForm extends AbstractSmartComponent {
   }
 
   getData() {
-    const form = this.getElement().querySelector(`.card__form`);
+    const form = this.getElement();
     const formData = new FormData(form);
 
-    return parseFormData(formData);
+    return Object.assign({}, parseFormData(formData), {offers: this._tripEvent.offers});
   }
 
   recoveryListeners() {
@@ -253,7 +254,7 @@ export default class TripEventForm extends AbstractSmartComponent {
   }
 
   setSubmitHandler(handler) {
-    this.getElement().addEventListener(`submit`, handler);
+    this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, handler);
 
     this._onSubmitHandler = handler;
   }

@@ -15,6 +15,7 @@ pointsModel.setPoints(tripEvents);
 
 const tripInfo = document.querySelector(`.trip-info`);
 const totalCost = document.querySelector(`.trip-info__cost-value`);
+const newEventButton = document.querySelector(`.trip-main__event-add-btn`);
 const tripControls = document.querySelector(`.trip-controls`);
 const menuTitle = document.querySelector(`.trip-controls .visually-hidden:first-child`);
 const pageTripEvents = document.querySelector(`.trip-events`);
@@ -36,4 +37,8 @@ const filterController = new FilterController(tripControls, pointsModel);
 filterController.render();
 
 const tripController = new TripController(pageTripEvents, pointsModel);
+newEventButton.addEventListener(`click`, () => {
+  tripController.createEvent();
+});
+
 tripController.render();

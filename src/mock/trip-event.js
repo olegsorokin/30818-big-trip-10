@@ -78,4 +78,4 @@ const createTripEvents = (count) => {
   );
 };
 
-export {createTripEvents, getOffers, getDescription};
+export {createTripEvents, getPhotos, getOffers, getDescription};
