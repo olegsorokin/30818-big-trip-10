@@ -58,6 +58,7 @@ const getOffers = () => {
 
 const createTripEvent = () => {
   return ({
+    id: String(Date.now() + Math.random()),
     type: getType(),
     city: getCity(),
     photos: getPhotos(),
@@ -77,4 +78,4 @@ const createTripEvents = (count) => {
   );
 };
 
-export {createTripEvents, getOffers, getDescription};
+export {createTripEvents, getPhotos, getOffers, getDescription};

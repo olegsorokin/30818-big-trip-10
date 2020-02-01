@@ -1,27 +1,46 @@
 import moment from 'moment';
 
-const getStartOfDate = (date) => {
+export const getStartOfDate = (date) => {
   return moment(date).startOf(`day`).valueOf();
 };
 
-const getDiffTime = (start, end) => {
-  return moment(end).diff(moment(start));
-};
-
-const formatTime = (timestamp) => {
+export const formatTime = (timestamp) => {
   return moment(timestamp).format(`HH:mm`);
 };
 
-const formatDatetime = (date) => {
+export const formatDatetime = (date) => {
   return moment(date).format(`YYYY-MM-DD HH:mm`);
 };
 
-const formatDiff = (date) => {
-  return moment(date).format(`DD[D] hh[H] mm[M]`);
+export const formatDiff = (start, end) => {
+  const diff = moment(end).diff(moment(start));
+  const minutes = moment.duration(diff).minutes();
+  const hours = moment.duration(diff).hours();
+  const days = moment.duration(diff).days();
+
+  if (days === 0) {
+    if (hours === 0) {
+      return moment(`${minutes}`, `m`).format(`mm[M]`);
+    }
+
+    return moment(`${hours} ${minutes}`, `H m`).format(`HH[H] mm[M]`);
+  }
+
+  return moment(`${days} ${hours} ${minutes}`, `D H m`).format(`DD[D] HH[H] mm[M]`);
 };
 
-const formatShortDate = (date) => {
+export const formatShortDate = (date) => {
   return moment(date).format(`D MMM`);
 };
 
-export {getStartOfDate, getDiffTime, formatTime, formatDiff, formatDatetime, formatShortDate};
+export const isFutureDate = (date) => {
+  return moment(date).isAfter(Date.now(), `day`);
+};
+
+export const isPastDate = (date) => {
+  return moment(date).isBefore(Date.now(), `day`);
+};
+
+export const parseTime = (time, mask) => {
+  return moment(time, mask).unix() * 1000;
+};

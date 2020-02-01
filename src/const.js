@@ -45,4 +45,16 @@ const offers = [
   }
 ];
 
-export {transferTypes, activityTypes, destinations, offers};
+const FilterType = {
+  EVERYTHING: `everything`,
+  FUTURE: `future`,
+  PAST: `past`
+};
+
+const SortType = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`
+};
+
+export {transferTypes, activityTypes, destinations, offers, FilterType, SortType};

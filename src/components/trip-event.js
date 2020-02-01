@@ -1,9 +1,7 @@
-import {formatTime, getDiffTime, formatDiff, formatDatetime} from '../utils/format-time';
+import {formatTime, formatDiff, formatDatetime} from '../utils/format-time';
 import AbstractComponent from './abstract-component';
 
 const getTimeMarkup = (startDate, endDate) => {
-  const diff = getDiffTime(startDate, endDate);
-
   return (
     `<div class="event__schedule">
       <p class="event__time">
@@ -11,7 +9,7 @@ const getTimeMarkup = (startDate, endDate) => {
         &mdash;
         <time class="event__end-time" datetime="${formatDatetime(endDate)}">${formatTime(endDate)}</time>
       </p>
-      <p class="event__duration">${formatDiff(diff)}</p>
+      <p class="event__duration">${formatDiff(startDate, endDate)}</p>
     </div>`
   );
 };

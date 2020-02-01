@@ -1,11 +1,27 @@
 import TripEventComponent from '../components/trip-event';
 import TripEventFormComponent from '../components/trip-event-edit';
-import {render, RenderPosition, replace} from '../utils/render';
+import {render, RenderPosition, replace, remove} from '../utils/render';
 import AbstractSmartComponent from '../components/abstract-smart-component';
+import {transferTypes} from '../const';
 
-const Mode = {
+export const Mode = {
+  ADDING: `adding`,
   DEFAULT: `default`,
   EDIT: `edit`
+};
+
+export const EmptyEvent = {
+  type: transferTypes[0],
+  city: ``,
+  photos: [],
+  description: ``,
+  date: {
+    start: null,
+    end: null
+  },
+  price: 0,
+  offers: [],
+  isFavorite: false
 };
 
 export default class PointController extends AbstractSmartComponent {
@@ -24,9 +40,10 @@ export default class PointController extends AbstractSmartComponent {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(tripEvent) {
+  render(tripEvent, mode) {
+    this._mode = mode;
     this._tripEventComponent = new TripEventComponent(tripEvent);
-    this._tripEventFormComponent = new TripEventFormComponent(tripEvent);
+    this._tripEventFormComponent = new TripEventFormComponent(tripEvent, mode);
 
     this._tripEventComponent.setRollupButtonClickHandler(() => {
       this._replaceTripEventToForm();
@@ -36,8 +53,32 @@ export default class PointController extends AbstractSmartComponent {
       this._replaceFormToTripEvent();
     });
 
-    this._tripEventFormComponent.setSubmitHandler(() => {
+    this._tripEventFormComponent.setSubmitHandler((evt) => {
+      evt.preventDefault();
+      const data = this._tripEventFormComponent.getData();
+
+      switch (this._mode) {
+        case Mode.ADDING:
+          this._onDataChange(this, null, data);
+          break;
+        case Mode.EDIT:
+          this._onDataChange(this, tripEvent, data);
+          break;
+      }
+
       this._replaceFormToTripEvent();
+    });
+
+    this._tripEventFormComponent.setDeleteButtonClickHandler(() => {
+      switch (this._mode) {
+        case Mode.ADDING:
+          this._onDataChange(this, null, null);
+          this.destroy();
+          break;
+        case Mode.EDIT:
+          this._onDataChange(this, tripEvent, null);
+          break;
+      }
     });
 
     this._tripEventFormComponent.setFavoriteChangeHandler((evt) => {
@@ -46,13 +87,37 @@ export default class PointController extends AbstractSmartComponent {
       }));
     });
 
-    render(this._container, this._tripEventComponent, RenderPosition.BEFOREEND);
+    switch (mode) {
+      case Mode.DEFAULT:
+        render(this._container, this._tripEventComponent, RenderPosition.BEFOREEND);
+        break;
+      case Mode.ADDING:
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+
+        render(this._container, this._tripEventFormComponent, RenderPosition.AFTERBEGIN);
+        break;
+    }
+  }
+
+  getMode() {
+    return this._mode;
   }
 
   setDefaultView() {
-    if (this._mode !== Mode.DEFAULT) {
-      this._replaceFormToTripEvent();
+    switch (this._mode) {
+      case Mode.EDIT:
+        this._replaceFormToTripEvent();
+        break;
+      case Mode.ADDING:
+        this.destroy();
+        break;
     }
+  }
+
+  destroy() {
+    remove(this._tripEventFormComponent);
+    remove(this._tripEventComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _replaceTripEventToForm() {
@@ -75,6 +140,13 @@ export default class PointController extends AbstractSmartComponent {
     const isEscKey = event.key === `Escape` || event.key === `Esc`;
 
     if (isEscKey) {
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, null, null);
+        this.destroy();
+
+        return;
+      }
+
       this._replaceFormToTripEvent();
     }
   }
