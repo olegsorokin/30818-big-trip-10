@@ -56,7 +56,13 @@ const getTypes = (points) => {
 const chartsData = (points) => ({
   money() {
     const calculateStats = (items, type) => items.reduce((acc, current) => {
-      return acc += current.type === type ? current.price : 0;
+      if (current.type === type) {
+        acc += current.price;
+
+        return acc;
+      }
+
+      return acc;
     }, 0);
 
     return getTypes(points).map((type) => {
