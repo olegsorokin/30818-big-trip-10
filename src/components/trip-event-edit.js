@@ -5,7 +5,7 @@ import {transferTypes, activityTypes, destinations, offers as offersList} from '
 import AbstractSmartComponent from './abstract-smart-component';
 import {getOffers, getDescription, getPhotos} from '../mock/trip-event';
 import {parseTime} from '../utils/format-time';
-import {Mode} from "../controllers/point";
+import {Mode} from '../controllers/point';
 
 const createTypeGroupMarkup = (title, types, currentType, index) => {
   const list = types.map((type) => {

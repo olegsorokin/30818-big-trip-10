@@ -61,5 +61,5 @@ newEventButton.addEventListener(`click`, () => {
 });
 tripController.render();
 
-const statisticsComponent = new Statistics();
+const statisticsComponent = new Statistics(pointsModel);
 render(pageContainer, statisticsComponent, RenderPosition.BEFOREEND);
